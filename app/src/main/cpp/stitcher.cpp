@@ -135,7 +135,7 @@ cv::Mat removeBlackEdge(cv::Mat srcMat, jfloat widthRatio, jfloat heightRatio) {
 extern "C"
 JNIEXPORT jintArray JNICALL
 Java_com_funsnap_pano_ImagesStitch_stitchImages(JNIEnv *env, jclass type,
-                                                jobjectArray paths,jstring outPath,
+                                                jobjectArray paths, jstring outPath,
                                                 jfloat widthRatio, jfloat heightRatio,
                                                 jint length) {
 
@@ -155,12 +155,15 @@ Java_com_funsnap_pano_ImagesStitch_stitchImages(JNIEnv *env, jclass type,
     cv::Stitcher stitcher = cv::Stitcher::createDefault(false);
     Stitcher::Status state = stitcher.stitch(mats, temMat);
 
-    //裁剪掉黑边
-    finalMat = removeBlackEdge(temMat, widthRatio, heightRatio);
-
-    //保存mat到本地
-    String path = env->GetStringUTFChars(outPath, JNI_FALSE);
-    imwrite(path, finalMat);
+    //拼接成功
+    if (state == 0) {
+        //裁剪掉黑边
+        finalMat = removeBlackEdge(temMat, widthRatio, heightRatio);
+        //保存mat到本地
+        String path = env->GetStringUTFChars(outPath, JNI_FALSE);
+        imwrite(path, finalMat);
+        finalMat.release();
+    }
 
     jintArray jint_arr = env->NewIntArray(3);
     jint *elems = env->GetIntArrayElements(jint_arr, NULL);

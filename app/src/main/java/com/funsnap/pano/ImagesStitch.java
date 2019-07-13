@@ -49,7 +49,7 @@ public class ImagesStitch {
      * @param widthRatio  宽度最多裁掉的比例
      * @param heightRatio 高度最多裁掉的比例
      * @param length      //裁剪参数，值越大裁的比例越小，默认500
-     * @return
+     * @return 【1】 拼接后宽度  【2】拼接后的高度
      */
     private native static int[] stitchImages(String path[], String outPath,
                                              float widthRatio, float heightRatio, int length);
