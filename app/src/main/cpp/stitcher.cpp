@@ -132,51 +132,10 @@ cv::Mat removeBlackEdge(cv::Mat srcMat, jfloat widthRatio, jfloat heightRatio) {
     return resultMat;
 }
 
-
-void MatToBitmap(JNIEnv *env, Mat &mat, jobject &bitmap) {
-    AndroidBitmapInfo info;
-    void *pixels = 0;
-    Mat &src = mat;
-    try {
-        CV_Assert(AndroidBitmap_getInfo(env, bitmap, &info) >= 0);
-        CV_Assert(info.format == ANDROID_BITMAP_FORMAT_RGBA_8888 ||
-                  info.format == ANDROID_BITMAP_FORMAT_RGB_565);
-        CV_Assert(src.dims == 2 && info.height == (uint32_t) src.rows &&
-                  info.width == (uint32_t) src.cols);
-        CV_Assert(src.type() == CV_8UC1 || src.type() == CV_8UC3 || src.type() == CV_8UC4);
-        CV_Assert(AndroidBitmap_lockPixels(env, bitmap, &pixels) >= 0);
-        CV_Assert(pixels);
-
-        if (info.format == ANDROID_BITMAP_FORMAT_RGBA_8888) {
-            Mat tmp(info.height, info.width, CV_8UC4, pixels);
-            if (src.type() == CV_8UC1) {
-                cvtColor(src, tmp, COLOR_GRAY2RGBA);
-            } else if (src.type() == CV_8UC3) {
-                cvtColor(src, tmp, COLOR_BGR2RGBA);
-            } else if (src.type() == CV_8UC4) {
-                cvtColor(src, tmp, COLOR_RGBA2mRGBA);
-            }
-        }
-        AndroidBitmap_unlockPixels(env, bitmap);
-        return;
-    } catch (const cv::Exception &e) {
-        AndroidBitmap_unlockPixels(env, bitmap);
-        jclass je = env->FindClass("org/opencv/core/CvException");
-        if (!je) je = env->FindClass("java/lang/Exception");
-        env->ThrowNew(je, e.what());
-        return;
-    } catch (...) {
-        AndroidBitmap_unlockPixels(env, bitmap);
-        jclass je = env->FindClass("java/lang/Exception");
-        env->ThrowNew(je, "Unknown exception in JNI code {nMatToBitmap}");
-        return;
-    }
-}
-
 extern "C"
 JNIEXPORT jintArray JNICALL
 Java_com_funsnap_pano_ImagesStitch_stitchImages(JNIEnv *env, jclass type,
-                                                jobjectArray paths,
+                                                jobjectArray paths,jstring outPath,
                                                 jfloat widthRatio, jfloat heightRatio,
                                                 jint length) {
 
@@ -199,12 +158,9 @@ Java_com_funsnap_pano_ImagesStitch_stitchImages(JNIEnv *env, jclass type,
     //裁剪掉黑边
     finalMat = removeBlackEdge(temMat, widthRatio, heightRatio);
 
-    //释放mat
-    temMat.release();
-    for (int i = 0; i < mats.size(); i++) {
-        mats[i].release();
-    }
-
+    //保存mat到本地
+    String path = env->GetStringUTFChars(outPath, JNI_FALSE);
+    imwrite(path, finalMat);
 
     jintArray jint_arr = env->NewIntArray(3);
     jint *elems = env->GetIntArrayElements(jint_arr, NULL);
@@ -213,21 +169,14 @@ Java_com_funsnap_pano_ImagesStitch_stitchImages(JNIEnv *env, jclass type,
     elems[2] = finalMat.rows;//高
 
     env->ReleaseIntArrayElements(jint_arr, elems, 0);
-    return jint_arr;
-}
 
-extern "C"
-JNIEXPORT jint JNICALL
-Java_com_funsnap_pano_ImagesStitch_getBitmap(JNIEnv *env, jclass type, jobject bitmap) {
-
-    if (finalMat.dims != 2) {
-        return -1;
+    //释放mat
+    temMat.release();
+    for (int i = 0; i < mats.size(); i++) {
+        mats[i].release();
     }
 
-    MatToBitmap(env, finalMat, bitmap);
-    finalMat.release();
-
-    return 0;
+    return jint_arr;
 }
 
 

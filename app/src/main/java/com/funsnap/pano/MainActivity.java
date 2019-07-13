@@ -1,6 +1,5 @@
 package com.funsnap.pano;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -8,11 +7,6 @@ import android.util.Log;
 
 import com.shizhefei.view.largeimage.LargeImageView;
 import com.shizhefei.view.largeimage.factory.FileBitmapDecoderFactory;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,40 +42,23 @@ public class MainActivity extends AppCompatActivity {
 //                paths[3] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190712_101021/CAP_20190712_101034.jpg";
 //                paths[4] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190712_101021/CAP_20190712_101038.jpg";
 
-                ImagesStitch.StitchImages(paths, new ImagesStitch.onStitchResultListener() {
-                    @Override
-                    public void onSuccess(final Bitmap bitmap) {
 
+
+                final String mResultPath = Environment.getExternalStorageDirectory() + "/Capture/" + "test.jpg";
+                ImagesStitch.StitchImages(paths, mResultPath,new ImagesStitch.onStitchResultListener() {
+                    @Override
+                    public void onSuccess() {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                String mResultPath = Environment.getExternalStorageDirectory() + "/Capture/" + "test.jpg";
-                                File f = new File(mResultPath);
-                                if (f.exists()) {
-                                    f.delete();
-                                }
-                                try {
-                                    FileOutputStream out = new FileOutputStream(f);
-                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                                    out.flush();
-                                    out.close();
-                                } catch (FileNotFoundException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                } catch (IOException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
-
                                 largeImageView.setImage(new FileBitmapDecoderFactory(mResultPath));
-
                             }
                         });
                     }
 
                     @Override
                     public void onError(String errorMsg) {
-                        Log.d("liuping", "111:" + errorMsg);
+                        Log.d("liuping", "错误:" + errorMsg);
                     }
                 });
             }
