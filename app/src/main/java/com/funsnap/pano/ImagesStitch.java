@@ -2,7 +2,13 @@ package com.funsnap.pano;
 
 import android.support.annotation.NonNull;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ImagesStitch {
     public final static int OK = 0;
@@ -21,7 +27,7 @@ public class ImagesStitch {
                 return;
             }
         }
-        int wh[] = stitchImages(paths, outPath, 0.1f, 0.2f, 500);
+        int wh[] = stitchImages(paths, outPath, 0.1f, 0.2f, 500,!isCPU64());
 
         switch (wh[0]) {
             case OK: {
@@ -52,7 +58,7 @@ public class ImagesStitch {
      * @return 【1】 拼接后宽度  【2】拼接后的高度
      */
     private native static int[] stitchImages(String path[], String outPath,
-                                             float widthRatio, float heightRatio, int length);
+                                             float widthRatio, float heightRatio, int length,boolean cpu32);
 
 
     public interface onStitchResultListener {
@@ -60,6 +66,45 @@ public class ImagesStitch {
         void onSuccess();
 
         void onError(String errorMsg);
+    }
+
+    public static boolean isCPU64(){
+        boolean result = false;
+        String mProcessor = null;
+        List<String > list = null;
+        try {
+            mProcessor = getFieldFromCpuinfo("Processor");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (mProcessor != null) {
+            if (mProcessor.contains("aarch64")) {
+                result = true;
+            }
+        }
+
+        return result;
+    }
+
+
+    public static String getFieldFromCpuinfo(String field) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("/proc/cpuinfo"));
+        Pattern p = Pattern.compile(field + "\\s*:\\s*(.*)");
+
+        try {
+            String line;
+            while ((line = br.readLine()) != null) {
+                Matcher m = p.matcher(line);
+                if (m.matches()) {
+                    return m.group(1);
+                }
+            }
+        } finally {
+            br.close();
+        }
+
+        return null;
     }
 
 }

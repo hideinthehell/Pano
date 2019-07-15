@@ -137,7 +137,7 @@ JNIEXPORT jintArray JNICALL
 Java_com_funsnap_pano_ImagesStitch_stitchImages(JNIEnv *env, jclass type,
                                                 jobjectArray paths, jstring outPath,
                                                 jfloat widthRatio, jfloat heightRatio,
-                                                jint length) {
+                                                jint length,jboolean cpu32) {
 
     BLACK_NUM = length;
 
@@ -148,6 +148,9 @@ Java_com_funsnap_pano_ImagesStitch_stitchImages(JNIEnv *env, jclass type,
         jstr = (jstring) env->GetObjectArrayElement(paths, i);
         const char *path = (char *) env->GetStringUTFChars(jstr, 0);
         cv::Mat mat = cv::imread(path);
+        //32位cpu在图片图片太多的时候，内存消耗很大，需要缩放
+        if (cpu32 && len > 6) cv::resize(mat, mat, cv::Size(mat.cols / 2, mat.rows / 2));
+
         mats.push_back(mat);
     }
 

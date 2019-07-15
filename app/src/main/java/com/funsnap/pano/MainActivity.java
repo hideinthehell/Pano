@@ -25,15 +25,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 String[] paths = new String[9];
-                paths[0] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190712_103501/CAP_20190712_103504.jpg";
-                paths[1] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190712_103501/CAP_20190712_103507.jpg";
-                paths[2] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190712_103501/CAP_20190712_103511.jpg";
-                paths[3] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190712_103501/CAP_20190712_103514.jpg";
-                paths[4] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190712_103501/CAP_20190712_103517.jpg";
-                paths[5] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190712_103501/CAP_20190712_103521.jpg";
-                paths[6] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190712_103501/CAP_20190712_103524.jpg";
-                paths[7] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190712_103501/CAP_20190712_103527.jpg";
-                paths[8] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190712_103501/CAP_20190712_103530.jpg";
+                paths[0] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190715_112203/CAP_20190715_112206.jpg";
+                paths[1] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190715_112203/CAP_20190715_112209.jpg";
+                paths[2] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190715_112203/CAP_20190715_112213.jpg";
+                paths[3] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190715_112203/CAP_20190715_112216.jpg";
+                paths[4] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190715_112203/CAP_20190715_112219.jpg";
+                paths[5] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190715_112203/CAP_20190715_112222.jpg";
+                paths[6] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190715_112203/CAP_20190715_112226.jpg";
+                paths[7] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190715_112203/CAP_20190715_112229.jpg";
+                paths[8] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190715_112203/CAP_20190715_112232.jpg";
 
 //                String[] paths = new String[5];
 //                paths[0] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190712_101021/CAP_20190712_101024.jpg";
@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
 //                paths[2] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190712_101021/CAP_20190712_101031.jpg";
 //                paths[3] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190712_101021/CAP_20190712_101034.jpg";
 //                paths[4] = "/storage/emulated/0/Capture/Camera/NEW_PANO/PANO_20190712_101021/CAP_20190712_101038.jpg";
-
 
 
                 final String mResultPath = Environment.getExternalStorageDirectory() + "/Capture/" + "test.jpg";
@@ -64,4 +63,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
     }
+
+
+
 }
