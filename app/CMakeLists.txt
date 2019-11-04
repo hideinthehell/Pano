@@ -11,7 +11,7 @@ cmake_minimum_required(VERSION 3.4.1)
 # Gradle automatically packages shared libraries with your APK.
 
 #opencv 路径
-set(OPENCV_DIR C:/Users/admin/Desktop/opencv3-android-sdk-with-contrib-master/OpenCV-android-sdk)
+set(OPENCV_DIR C:/Users/admin/Desktop/OpenCV-android-sdk)
 
 #头文件引用路径
 include_directories(${OPENCV_DIR}/sdk/native/jni/include)
@@ -22,7 +22,7 @@ set_target_properties(lib_opencv PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SO
 
 #导入stitcher编译好的库
 add_library(lib_stitcher STATIC IMPORTED)
-set_target_properties(lib_stitcher PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libopencv_stitching.a)
+set_target_properties(lib_stitcher PROPERTIES IMPORTED_LOCATION ${OPENCV_DIR}/sdk/native/libs/${ANDROID_ABI}/libopencv_stitching.a)
 
 add_library( # Sets the name of the library.
         funsnap_stitch
@@ -60,4 +60,27 @@ target_link_libraries( # Specifies the target library.
 
         # Links the target library to the log library
         # included in the NDK.
+        ${log-lib})
+
+
+
+
+
+
+add_library(lib_stability STATIC IMPORTED)
+set_target_properties(lib_stability PROPERTIES IMPORTED_LOCATION ${OPENCV_DIR}/sdk/native/libs/${ANDROID_ABI}/libopencv_videostab.a)
+
+add_library(
+        stability
+
+        SHARED
+
+        src/main/cpp/stability.cpp)
+
+
+target_link_libraries(
+        stability
+        lib_stability
+        lib_opencv
+
         ${log-lib})

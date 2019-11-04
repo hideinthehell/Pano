@@ -1,6 +1,7 @@
 package com.funsnap.pano;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,7 +28,12 @@ public class ImagesStitch {
                 return;
             }
         }
-        int wh[] = stitchImages(paths, outPath, 0.1f, 0.2f, 500,!isCPU64());
+
+        float scale = 1;
+        if (!isCPU64()) scale = 0.5f;
+        long l = System.currentTimeMillis();
+        int wh[] = stitchImages(paths, outPath, 0.1f, 0.2f, 500,0.5f);
+        Log.d("liuping","时间:" + (System.currentTimeMillis() - l));
 
         switch (wh[0]) {
             case OK: {
@@ -58,7 +64,7 @@ public class ImagesStitch {
      * @return 【1】 拼接后宽度  【2】拼接后的高度
      */
     private native static int[] stitchImages(String path[], String outPath,
-                                             float widthRatio, float heightRatio, int length,boolean cpu32);
+                                             float widthRatio, float heightRatio, int length,float scale);
 
 
     public interface onStitchResultListener {
